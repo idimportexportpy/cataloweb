@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const rows = data.split('\n').slice(1);
         return rows.map((row, i) => {
             const columns = row.split(',');
-            if (columns.length < 4) {
+            if (columns.length < 5) {
                 console.warn(`Skipping malformed CSV row ${i + 2}: ${row}`);
                 return null;
             }
@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 producto: columns[0],
                 marca: columns[1],
                 modelo: columns[2],
-                imgsrc: columns.slice(3).join(','),
+                imgsrc: columns[3],
+                codigo: (columns[4] || '').trim(),
             };
         }).filter(p => p && p.producto);
     }
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div class="product-card" data-id="${product.id}">
                 <img src="${product.imgsrc}" alt="${product.producto}" class="product-image">
-                <h3>${product.producto}</h3>
+                <h3>${product.codigo} ${product.producto}</h3>
                 <div class="selection">
                     <input type="checkbox" class="select-checkbox" ${isSelected ? 'checked' : ''}>
                     <label>SELECCIONAR</label>
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div class="product-card" data-id="${product.id}">
                 <img src="${product.imgsrc}" alt="${product.producto}" class="product-image">
-                <h3>${product.producto}</h3>
+                <h3>${product.codigo} ${product.producto}</h3>
                 <div class="quantity">
                     <label>CANTIDAD:</label>
                     <input type="number" class="quantity-input" value="${selection.quantity}" min="1">
@@ -321,7 +322,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 doc.addPage();
                 y = 20;
             }
-            doc.text(`${product.producto} (Cantidad: ${state.selectedProducts[product.id].quantity})`, 20, y);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`- cod: `, 20, y);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${product.codigo}`, 35, y);
+            doc.setFont('helvetica', 'normal');
+            doc.text(` ${product.producto} (cant: ${state.selectedProducts[product.id].quantity})`, 45, y);
             y += 10;
         }
         
@@ -355,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const productNames = state.products
             .filter(p => selectedIds.includes(p.id.toString()))
-            .map(p => `${p.producto} (Cantidad: ${state.selectedProducts[p.id].quantity})`)
+            .map(p => `- cod: *${p.codigo}* ${p.producto} (cant: ${state.selectedProducts[p.id].quantity})`)
             .join('\n');
             
         let message = `HOLA!\nEstoy interesado en los siguientes productos:\n${productNames}\n\n`;
