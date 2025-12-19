@@ -102,6 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderIndexPage() {
         const container = document.getElementById('product-container');
         if (!container) return;
+
+        const productCount = state.filteredProducts.length;
+        const productCountElement = document.getElementById('product-count');
+        if (productCountElement) {
+            productCountElement.textContent = `PRODUCTOS: ${productCount}`;
+        }
+
         container.innerHTML = '';
         const start = (state.currentPage - 1) * state.itemsPerPage;
         const end = state.itemsPerPage === 'all' ? state.filteredProducts.length : start + state.itemsPerPage;
