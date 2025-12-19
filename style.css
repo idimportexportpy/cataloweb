@@ -62,6 +62,17 @@ header h1 {
     border-color: #1abc9c;
 }
 
+#product-count {
+    padding: 12px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    align-items: center;
+}
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
